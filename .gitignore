@@ -1,0 +1,9 @@
+.idea/
+lib/*
+out
+target
+*.iml
+kiyv.domain.model.log
+*.patch
+
+
