@@ -25,12 +25,11 @@ import java.util.stream.Collectors;
 import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class CopyOrder {
-
+    private String dbfPath = null;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-
-    public static void main(String[] args) {
-        new CopyOrder().doCopyNewRecord();
+    public CopyOrder(String dbfPath) {
+        this.dbfPath = dbfPath;
     }
 
     public void doCopyNewRecord() {
@@ -42,10 +41,10 @@ public class CopyOrder {
 
         OrderDao orderDao = new OrderDaoJdbc(connPostgres);
 
-        JournalReader journalReader = new JournalReader();
-        OrderReader orderReader = new OrderReader();
-        ClientReader clientReader = new ClientReader();
-        WorkerReader managerReader = new WorkerReader();
+        JournalReader journalReader = new JournalReader(dbfPath);
+        OrderReader orderReader = new OrderReader(dbfPath);
+        ClientReader clientReader = new ClientReader(dbfPath);
+        WorkerReader managerReader = new WorkerReader(dbfPath);
 
         Map<String, String> mapManagerName = managerReader.getAll();
         Map<String, String> mapClientName = clientReader.getAll()

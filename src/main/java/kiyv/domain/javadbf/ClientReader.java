@@ -12,15 +12,11 @@ import java.util.List;
 import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class ClientReader {
-
+    private String dbfPath = null;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    public static void main(String[] args) {
-        List<Client> clients = new ClientReader().getAll();
-        for (Client c : clients) {
-            System.out.println(c.getId() + ", " + c.getName());
-        }
-        System.out.println(clients.size());
+    public ClientReader(String dbfPath) {
+        this.dbfPath = dbfPath;
     }
 
     public List<Client> getAll() {
@@ -29,7 +25,7 @@ public class ClientReader {
 
         DBFReader reader = null;
         try {
-            reader = new DBFReader(new FileInputStream("D:\\KiyV management2\\DB_copy\\SC172.DBF"));
+            reader = new DBFReader(new FileInputStream(dbfPath + "\\SC172.DBF"));
 
             DBFRow row;
 

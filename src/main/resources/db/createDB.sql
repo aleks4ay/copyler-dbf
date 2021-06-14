@@ -29,7 +29,8 @@ CREATE TABLE techno_item
 --   size_a INTEGER,
   --   size_b INTEGER,
   --   size_c INTEGER,
-  descr VARCHAR
+  descr VARCHAR,
+  store_c INTEGER DEFAULT 0
 );
 
 CREATE TABLE orders
@@ -150,6 +151,23 @@ CREATE TABLE manufacture
   size_c INTEGER,
   embodiment VARCHAR(9),
   FOREIGN KEY (id_order) REFERENCES orders (iddoc) ON DELETE CASCADE
+);
+
+CREATE TABLE manufacture_techno
+(
+  id VARCHAR(13) PRIMARY KEY NOT NULL,
+  id_manuf VARCHAR(9),
+  docno VARCHAR(10),
+  id_tmc VARCHAR(9),
+  id_order VARCHAR(9),
+  position INTEGER,
+  time_manuf TIMESTAMP,
+  quantity INTEGER,
+  descr_second VARCHAR,
+  size_a INTEGER,
+  size_b INTEGER,
+  size_c INTEGER,
+  embodiment VARCHAR(9)
 );
 
 CREATE VIEW order_view (

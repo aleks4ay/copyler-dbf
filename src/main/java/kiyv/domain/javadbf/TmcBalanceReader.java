@@ -18,13 +18,18 @@ import java.util.Map;
 import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class TmcBalanceReader {
+    private String dbfPath = null;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
+
+    public TmcBalanceReader(String dbfPath) {
+        this.dbfPath = dbfPath;
+    }
 
     public Map<String, Integer> getAll() {
         Map<String, Integer> tmcBalanceMap = new HashMap<>();
         DBFReader reader = null;
         try {
-            reader = new DBFReader(new FileInputStream("D:\\KiyV management2\\DB_copy\\RG1253.DBF"));
+            reader = new DBFReader(new FileInputStream(dbfPath + "\\RG1253.DBF"));
 
             DBFRow row;
             while ((row = reader.nextRow()) != null) {

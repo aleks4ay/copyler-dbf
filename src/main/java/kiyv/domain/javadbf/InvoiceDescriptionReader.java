@@ -15,23 +15,19 @@ import java.util.*;
 import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class InvoiceDescriptionReader {
-
+    private String dbfPath = null;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    public static void main(String[] args) {
-        List<InvoiceDescription> all = new InvoiceDescriptionReader().getAll();
-        if (all != null) {
-            all.forEach(System.out::println);
-        }
+    public InvoiceDescriptionReader(String dbfPath) {
+        this.dbfPath = dbfPath;
     }
-
 
     public List<InvoiceDescription> getAll() {
         List<InvoiceDescription> invoiceDescriptions = new ArrayList<>();
 
         DBFReader reader = null;
         try {
-            reader = new DBFReader(new FileInputStream("D:\\KiyV management2\\DB_copy\\DT3592.DBF"));
+            reader = new DBFReader(new FileInputStream(dbfPath + "\\DT3592.DBF"));
 
             DBFRow row;
             while ((row = reader.nextRow()) != null) {

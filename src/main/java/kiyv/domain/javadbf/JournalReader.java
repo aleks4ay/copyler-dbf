@@ -15,28 +15,24 @@ import java.util.Map;
 import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class JournalReader {
-
+    private String dbfPath = null;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    public static void main(String[] args) {
-        Map<String, Journal> journalMap = new JournalReader().getAllJournal();
-        for (Journal c : journalMap.values()) {
-            System.out.println(c.getIdDoc() + ", " + c.getDocNumber() + ", " + c.getDateCreate());
-        }
-        System.out.println(journalMap.size());
+    public JournalReader(String dbfPath) {
+        this.dbfPath = dbfPath;
     }
 
     public Map<String, Journal> getAllJournal() {
         Map<String, Journal> mapJournal = new HashMap<>();
         DBFReader reader = null;
         try {
-            reader = new DBFReader(new FileInputStream("D:\\KiyV management2\\DB_copy\\1SJOURN.DBF"));
+            reader = new DBFReader(new FileInputStream(dbfPath + "\\1SJOURN.DBF"));
 
             DBFRow row;
             while ((row = reader.nextRow()) != null) {
                 Date keyOrderYear = row.getDate("DATE");
                 int keyOrderIsEnable = row.getInt("CLOSED");
-                if (keyOrderYear.getTime() < 1560805200000L || keyOrderIsEnable ==4 ) {
+                if (keyOrderYear.getTime() < /*1580897872000L*/1560805200000L || keyOrderIsEnable ==4 ) {
                     continue;
                 }
 

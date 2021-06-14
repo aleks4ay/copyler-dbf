@@ -19,15 +19,11 @@ import java.util.Map;
 import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class InvoiceReader {
-
+    private String dbfPath = null;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    public static void main(String[] args) {
-        Map<String, Invoice> invoiceMap = new InvoiceReader().getAll();
-        for (Invoice c : invoiceMap.values()) {
-            System.out.println(c.getIdDoc() + ", " + c.getIdOrder() + ", " + c.getPrice());
-        }
-        System.out.println(invoiceMap.size());
+    public InvoiceReader(String dbfPath) {
+        this.dbfPath = dbfPath;
     }
 
     public Map<String, Invoice> getAll() {
@@ -36,7 +32,7 @@ public class InvoiceReader {
 
         DBFReader reader = null;
         try {
-            reader = new DBFReader(new FileInputStream("D:\\KiyV management2\\DB_copy\\DH3592.DBF"));
+            reader = new DBFReader(new FileInputStream(dbfPath + "\\DH3592.DBF"));
 
             DBFRow row;
             while ((row = reader.nextRow()) != null) {

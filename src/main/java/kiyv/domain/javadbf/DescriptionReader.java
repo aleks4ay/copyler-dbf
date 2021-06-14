@@ -12,26 +12,19 @@ import java.util.List;
 import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class DescriptionReader  {
-
+    private String dbfPath = null;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    public static void main(String[] args) {
-        List<Description> descriptionList = new DescriptionReader().getAll();
-        for (Description d : descriptionList) {
-            System.out.println(d.getId() + ", " + d.getIdDoc() + ", " + d.getPosition() + ", " + d.getIdTmc() + ", " +
-                    d.getQuantity() + ", " + d.getDescrSecond() + ", " + d.getEmbodiment() +
-                    d.getSizeA() + ", " + d.getSizeB() + ", " + d.getSizeB());
-        }
-        System.out.println(descriptionList.size());
+    public DescriptionReader(String dbfPath) {
+        this.dbfPath = dbfPath;
     }
-
 
     public List<Description> getAll() {
 
         List<Description> descriptionList = new ArrayList<>();
         DBFReader reader = null;
         try {
-            reader = new DBFReader(new FileInputStream("D:\\KiyV management2\\DB_copy\\DT1898.DBF"));
+            reader = new DBFReader(new FileInputStream(dbfPath + "\\DT1898.DBF"));
 
             DBFRow row;
             while ((row = reader.nextRow()) != null) {

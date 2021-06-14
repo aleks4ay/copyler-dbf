@@ -11,14 +11,11 @@ import java.util.*;
 import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class CopyTmcBalance {
-
+    private String dbfPath = null;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-
-    public static void main(String[] args) {
-
-        new CopyTmcBalance().doCopyNewRecord();
-
+    public CopyTmcBalance(String dbfPath) {
+        this.dbfPath = dbfPath;
     }
 
     public void doCopyNewRecord() {
@@ -29,7 +26,7 @@ public class CopyTmcBalance {
         Connection connPostgres = utilDao.getConnPostgres();
 
         TmcDaoTechnoBalanceJdbc tmcDao = new TmcDaoTechnoBalanceJdbc(connPostgres);
-        TmcBalanceReader balanceReader = new TmcBalanceReader();
+        TmcBalanceReader balanceReader = new TmcBalanceReader(dbfPath);
 
         Map<String, Integer> oldBalance = tmcDao.getAllBalance();
         Map<String, Integer> newBalance = balanceReader.getAll();

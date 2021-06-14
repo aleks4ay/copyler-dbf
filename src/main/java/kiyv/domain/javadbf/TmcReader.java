@@ -12,18 +12,20 @@ import java.util.List;
 import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class TmcReader {
+    private String dbfPath = null;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
+
+    public TmcReader(String dbfPath) {
+        this.dbfPath = dbfPath;
+    }
 
     public List<Tmc> getAll() {
 
         List<Tmc> listTmc = new ArrayList<>();
-
         DBFReader reader = null;
         try {
-            reader = new DBFReader(new FileInputStream("D:\\KiyV management2\\DB_copy\\SC302.DBF"));
-
+            reader = new DBFReader(new FileInputStream(dbfPath + "\\SC302.DBF"));
             DBFRow row;
-
             while ((row = reader.nextRow()) != null) {
                 String id = row.getString("ID");
                 String parentId = row.getString("PARENTID");

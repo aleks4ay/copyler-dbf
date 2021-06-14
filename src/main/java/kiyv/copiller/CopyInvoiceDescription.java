@@ -16,11 +16,11 @@ import java.util.stream.Collectors;
 import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class CopyInvoiceDescription {
-
+    private String dbfPath = null;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    public static void main(String[] args) {
-        new CopyInvoiceDescription().doCopyNewRecord();
+    public CopyInvoiceDescription(String dbfPath) {
+        this.dbfPath = dbfPath;
     }
 
     public void doCopyNewRecord() {
@@ -33,7 +33,7 @@ public class CopyInvoiceDescription {
         InvoiceDao invoiceDao = new InvoiceDaoJdbc(connPostgres);
         InvoiceDescriptionDaoJdbc invoiceDescriptionDaoJdbc = new InvoiceDescriptionDaoJdbc(connPostgres);
 
-        InvoiceDescriptionReader invoiceDescriptionReader = new InvoiceDescriptionReader();
+        InvoiceDescriptionReader invoiceDescriptionReader = new InvoiceDescriptionReader(dbfPath);
 
         Map<String, Invoice> mapInvoice = invoiceDao.getAll()
                 .stream()

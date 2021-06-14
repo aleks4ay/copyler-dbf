@@ -19,11 +19,11 @@ import java.util.stream.Collectors;
 import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class CopyInvoice {
-
+    private String dbfPath = null;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    public static void main(String[] args) {
-        new CopyInvoice().doCopyNewRecord();
+    public CopyInvoice(String dbfPath) {
+        this.dbfPath = dbfPath;
     }
 
     public void doCopyNewRecord() {
@@ -37,8 +37,8 @@ public class CopyInvoice {
         InvoiceDao invoiceDao = new InvoiceDaoJdbc(connPostgres);
         OrderDao orderDao = new OrderDaoJdbc(connPostgres);
 
-        JournalReader journalReader = new JournalReader();
-        InvoiceReader invoiceReader = new InvoiceReader();
+        JournalReader journalReader = new JournalReader(dbfPath);
+        InvoiceReader invoiceReader = new InvoiceReader(dbfPath);
 
         List<String> listIdOrder = orderDao.getAllId();
         Map<String, Journal> mapJournal = journalReader.getAllJournal();

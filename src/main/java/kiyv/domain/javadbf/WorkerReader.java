@@ -15,14 +15,11 @@ import java.util.Map;
 import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class WorkerReader {
-
+    private String dbfPath = null;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    public static void main(String[] args) {
-        Map<String, String> workers = new WorkerReader().getAll();
-        for (String s : workers.values()){
-            System.out.println(s);
-        }
+    public WorkerReader(String dbfPath) {
+        this.dbfPath = dbfPath;
     }
 
     public Map<String, String> getAll() {
@@ -31,7 +28,7 @@ public class WorkerReader {
 
         DBFReader reader = null;
         try {
-            reader = new DBFReader(new FileInputStream("D:\\KiyV management2\\DB_copy\\SC1670.DBF"));
+            reader = new DBFReader(new FileInputStream(dbfPath + "\\SC1670.DBF"));
 
             DBFRow row;
             while ((row = reader.nextRow()) != null) {

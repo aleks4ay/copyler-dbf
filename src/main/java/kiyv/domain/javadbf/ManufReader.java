@@ -10,35 +10,51 @@ import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class ManufReader {
+    private String dbfPath = null;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    public static void main(String[] args) {
-        Map<String, Manufacture> manufactureMap = new ManufReader().getAll();
-        for (Manufacture c : manufactureMap.values()) {
-            System.out.println(c.getIdDoc() + ", " + c.getIdOrder() + ", " + c.getDescrSecond());
-        }
-        System.out.println(manufactureMap.size());
+    public ManufReader(String dbfPath) {
+        this.dbfPath = dbfPath;
+    }
+
+    public Map<String, Manufacture> getWithOrder() {
+        return getAllTemplate("with order");
+    }
+
+    public Map<String, Manufacture> getWithoutOrder() {
+        return getAllTemplate("without order");
     }
 
     public Map<String, Manufacture> getAll() {
+        return getAllTemplate("all Manufacture");
+    }
+
+    public Map<String, Manufacture> getAllTemplate(String typeOfProduct) {
 
         Map<String, Manufacture> mapManufacture = new HashMap<>();
 
         DBFReader reader = null;
         try {
-            reader = new DBFReader(new FileInputStream("D:\\KiyV management2\\DB_copy\\DT2728.DBF"));
+            reader = new DBFReader(new FileInputStream(dbfPath + "\\DT2728.DBF"));
 
             DBFRow row;
             while ((row = reader.nextRow()) != null) {
                 String key = row.getString("SP2722");
-                if (key.equals("     0")) {
-                    continue;
+                //Checking whether need to read techno production
+                if (typeOfProduct.equalsIgnoreCase("without order")) {
+                    if (! key.equals("     0")) {
+                        continue;
+                    }
+                }
+                if (typeOfProduct.equalsIgnoreCase("with order")) {
+                    if (key.equals("     0")) {
+                        continue;
+                    }
                 }
 
                 String idDoc = row.getString("IDDOC");

@@ -17,11 +17,11 @@ import java.util.stream.Collectors;
 import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class CopyTmc {
-
+    private String dbfPath = null;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    public static void main(String[] args) {
-        new CopyTmc().doCopyNewRecord();
+    public CopyTmc(String dbfPath) {
+        this.dbfPath = dbfPath;
     }
 
     public void doCopyNewRecord() {
@@ -32,7 +32,7 @@ public class CopyTmc {
         Connection connPostgres = utilDao.getConnPostgres();
 
         TmcDao tmcDao = new TmcDaoJdbc(connPostgres);
-        TmcReader tmcReader = new TmcReader();
+        TmcReader tmcReader = new TmcReader(dbfPath);
 
         List<Tmc> listNewTmc = new ArrayList<>();
         List<Tmc> listUpdatingTmc = new ArrayList<>();

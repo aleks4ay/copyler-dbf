@@ -18,15 +18,19 @@ import java.util.Map;
 import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class EmbodimentReader  {
-
+    private String dbfPath = null;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
+
+    public EmbodimentReader(String dbfPath) {
+        this.dbfPath = dbfPath;
+    }
 
     public Map<String, String> getAllEmbodiment() {
         Map<String, String> mapEmbodiment = new HashMap<>();
 
         DBFReader embodimentReader = null;
         try {
-            embodimentReader = new DBFReader(new FileInputStream("D:\\KiyV management2\\DB_copy\\SC14716.DBF"));
+            embodimentReader = new DBFReader(new FileInputStream(dbfPath + "\\SC14716.DBF"));
 
             DBFRow embodimentRow;
             while ((embodimentRow = embodimentReader.nextRow()) != null) {

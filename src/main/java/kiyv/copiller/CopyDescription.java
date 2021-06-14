@@ -20,11 +20,11 @@ import java.util.stream.Collectors;
 import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class CopyDescription {
-
+    private String dbfPath = null;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    public static void main(String[] args) {
-        new CopyDescription().doCopyNewRecord();
+    public CopyDescription(String dbfPath) {
+        this.dbfPath = dbfPath;
     }
 
     public void doCopyNewRecord() {
@@ -41,8 +41,8 @@ public class CopyDescription {
         DescriptionDao descriptionDao = new DescriptionDaoJdbc(connPostgres);
         StatusDao statusDao = new StatusDaoJdbc(connPostgres);
 
-        DescriptionReader descriptionReader = new DescriptionReader();
-        EmbodimentReader embodimentReader = new EmbodimentReader();
+        DescriptionReader descriptionReader = new DescriptionReader(dbfPath);
+        EmbodimentReader embodimentReader = new EmbodimentReader(dbfPath);
 
         Map<String, String> mapEmbodiment = embodimentReader.getAllEmbodiment();
 

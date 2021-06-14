@@ -14,15 +14,11 @@ import java.util.Map;
 import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class OrderReader  {
+    private String dbfPath = null;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    public static void main(String[] args) {
-        Map<String, Order> orderMap = new OrderReader().getAll();
-        for (Order c : orderMap.values()) {
-            System.out.println(c.getIdDoc() + ", " + c.getIdClient() + ", " + c.getDateToFactory() + ", " +
-                    c.getDurationTime() + ", " + c.getIdManager() + ", " + c.getPrice());
-        }
-        System.out.println(orderMap.size());
+    public OrderReader(String dbfPath) {
+        this.dbfPath = dbfPath;
     }
 
     public Map<String, Order> getAll() {
@@ -31,7 +27,7 @@ public class OrderReader  {
 
         DBFReader reader = null;
         try {
-            reader = new DBFReader(new FileInputStream("D:\\KiyV management2\\DB_copy\\DH1898.DBF"));
+            reader = new DBFReader(new FileInputStream(dbfPath + "\\DH1898.DBF"));
 
             DBFRow row;
             while ((row = reader.nextRow()) != null) {

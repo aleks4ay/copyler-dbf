@@ -63,32 +63,33 @@ public class CopyNewFiles {
             boolean isNewBalance = copyFiles("RG1253");
 
             if (isNewTmc) {
-                new CopyTmc().doCopyNewRecord();
+                new CopyTmc(dbfPath).doCopyNewRecord();
                 new CopyTmcTechno().doCopyNewRecord();
                 needWrite = true;
             }
             if (isNewOrder) {
-                new CopyOrder().doCopyNewRecord();
+                new CopyOrder(dbfPath).doCopyNewRecord();
                 needWrite = true;
             }
             if (isNewDescription) {
-                new CopyDescription().doCopyNewRecord();
+                new CopyDescription(dbfPath).doCopyNewRecord();
                 needWrite = true;
             }
             if (isNewManuf) {
-                new CopyManuf().doCopyNewRecord();
+                new CopyManuf(dbfPath).doCopyNewRecord();
+                new CopyManufTechno(dbfPath).doCopyNewRecord();
                 needWrite = true;
             }
             if (isNewInvoice) {
-                new CopyInvoice().doCopyNewRecord();
+                new CopyInvoice(dbfPath).doCopyNewRecord();
                 needWrite = true;
             }
             if (isNewInvoiceDescription) {
-                new CopyInvoiceDescription().doCopyNewRecord();
+                new CopyInvoiceDescription(dbfPath).doCopyNewRecord();
                 needWrite = true;
             }
             if (isNewBalance) {
-                new CopyTmcBalance().doCopyNewRecord();
+                new CopyTmcBalance(dbfPath).doCopyNewRecord();
                 needWrite = true;
             }
 
