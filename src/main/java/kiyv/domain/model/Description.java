@@ -192,7 +192,7 @@ public class Description {
                 ", position=" + position +
                 ", idTmc='" + idTmc + '\'' +
                 ", quantity=" + quantity +
-                ", descrFirst='" + status.getDescrFirst() + '\'' +
+//                ", descrFirst='" + status.getDescrFirst() + '\'' +
                 ", descrSecond='" + descrSecond + '\'' +
                 ", sizeA=" + sizeA +
                 ", sizeB=" + sizeB +

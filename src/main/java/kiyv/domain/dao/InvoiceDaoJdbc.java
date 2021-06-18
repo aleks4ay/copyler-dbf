@@ -28,7 +28,6 @@ public class InvoiceDaoJdbc implements InvoiceDao {
 
     public InvoiceDaoJdbc(Connection conn) {
         this.connPostgres = conn;
-        log.debug("Get connection to PostgreSQL from {}.", UtilDao.class);
     }
 
     @Override
@@ -36,16 +35,10 @@ public class InvoiceDaoJdbc implements InvoiceDao {
         try {
             PreparedStatement statement = connPostgres.prepareStatement(SQL_GET_ONE);
             statement.setString(1, id);
-            log.debug("Select 'Invoice'. SQL = {}. Id = {}.", SQL_GET_ONE, id);
-
             ResultSet rs = statement.executeQuery();
             rs.next();
-
-//            log.debug("return new 'Invoice'. Id = {}.", id);
-
             return new Invoice(id, rs.getString("docno"), rs.getString("id_order"), rs.getTimestamp("time_invoice"),
                     rs.getLong("time22"), rs.getDouble("price"));
-
         } catch (SQLException e) {
             log.warn("Exception during reading 'Invoice' with Id = {}.", id, e);
         }
@@ -59,14 +52,10 @@ public class InvoiceDaoJdbc implements InvoiceDao {
         try {
             Statement statement = connPostgres.createStatement();
             ResultSet rs = statement.executeQuery(SQL_GET_ALL);
-            log.debug("Select all 'Invoice'. SQL = {}.", SQL_GET_ALL);
-
             while (rs.next()) {
                 String id = rs.getString("iddoc");
-//                log.debug("return new 'Invoice'. Id = {}.", id);
-
-                Invoice invoice = new Invoice(id, rs.getString("docno"), rs.getString("id_order"), rs.getTimestamp("time_invoice"),
-                        rs.getLong("time22"), rs.getDouble("price"));
+                Invoice invoice = new Invoice(id, rs.getString("docno"), rs.getString("id_order"),
+                        rs.getTimestamp("time_invoice"), rs.getLong("time22"), rs.getDouble("price"));
                 result.add(invoice);
             }
             log.debug("Was read {} Invoices from Postgres.", result.size());
@@ -82,10 +71,7 @@ public class InvoiceDaoJdbc implements InvoiceDao {
         try {
             int result = 0;
             for (Invoice invoice : invoiceList) {
-                PreparedStatement ps = connPostgres.prepareStatement(sql); //docno, id_order, time_invoice, time22, price, iddoc
-
-                log.debug("Prepared 'Invoices' to batch. SQL = {}. {}.", sql, invoice);
-
+                PreparedStatement ps = connPostgres.prepareStatement(sql);
                 ps.setString(6, invoice.getIdDoc());
                 ps.setString(1, invoice.getDocNumber());
                 ps.setString(2, invoice.getIdOrder());
@@ -131,29 +117,7 @@ public class InvoiceDaoJdbc implements InvoiceDao {
 
     @Override
     public boolean deleteAll(Collection<String> listId) {
-        try {
-            int result = 0;
-            for (String idDoc : listId) {
-                PreparedStatement ps = connPostgres.prepareStatement(SQL_DELETE);
-                ps.setString(1, idDoc);
-                ps.addBatch();
-                int[] numberOfUpdates = ps.executeBatch();
-                result += IntStream.of(numberOfUpdates).sum();
-            }
-            if (result == listId.size()) {
-                log.debug("Try commit");
-                connPostgres.commit();
-                log.debug("Commit - OK. {} Invoices deleted.", result);
-                return true;
-            }
-            else {
-                connPostgres.rollback();
-                log.debug("Deleted {}, but need to delete {} Invoices. Not equals!!!", result, listId.size());
-            }
-        } catch (SQLException e) {
-            log.warn("Exception during delete {} old 'Invoices'. SQL = {}.", listId.size() , SQL_DELETE, e);
-        }
-        return false;
+        return new DefaultDaoJdbc().deleteAll(listId, connPostgres, SQL_DELETE);
     }
 
 }

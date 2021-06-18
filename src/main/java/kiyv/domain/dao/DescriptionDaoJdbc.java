@@ -26,21 +26,17 @@ public class DescriptionDaoJdbc implements DescriptionDao {
 
     public DescriptionDaoJdbc(Connection conn) {
         this.connPostgres = conn;
-        log.debug("Get connection to PostgreSQL from {}.", UtilDao.class);
     }
-
 
     @Override
     public Description getById(String id) {
         try {
             PreparedStatement statement = connPostgres.prepareStatement(SQL_GET_ONE);
             statement.setString(1, id);
-            log.debug("Select 'Description'. SQL = {}. Id = {}.", SQL_GET_ONE, id);
 
             ResultSet rs = statement.executeQuery();
             rs.next();
 
-            log.debug("return new 'Description'. Code = {}.", id);
             return new Description(id, rs.getString("iddoc"), rs.getInt("position"), rs.getString("id_tmc"), rs.getInt("quantity"),
                     rs.getString("descr_second"), rs.getInt("size_a"), rs.getInt("size_b"), rs.getInt("size_c"), rs.getString("embodiment"));
 
@@ -57,19 +53,13 @@ public class DescriptionDaoJdbc implements DescriptionDao {
         try {
             Statement statement = connPostgres.createStatement();
             ResultSet rs = statement.executeQuery(SQL_GET_ALL);
-            log.debug("Select all 'Description'. SQL = {}.", SQL_GET_ALL);
-
             while (rs.next()) {
                 String id = rs.getString("id");
-//                log.debug("return new 'Description'. Code = '{}'.", id);
-
                 Description description = new Description(id, rs.getString("iddoc"), rs.getInt("position"),
                         rs.getString("id_tmc"), rs.getInt("quantity"), rs.getString("descr_second"),
                         rs.getInt("size_a"), rs.getInt("size_b"), rs.getInt("size_c"), rs.getString("embodiment"));
-
                 result.add(description);
             }
-            log.debug("Was read {} Description from Postgres.", result.size());
             return result;
         } catch (SQLException e) {
             log.warn("Exception during reading all 'Description'.", e);
@@ -83,9 +73,6 @@ public class DescriptionDaoJdbc implements DescriptionDao {
             int result = 0;
             for (Description description : descriptionList) {
                 PreparedStatement ps = connPostgres.prepareStatement(sql);
-
-                log.debug("Prepared 'Description' to batch. SQL = {}. {}.", sql, description);
-
                 ps.setString(10, description.getId());
                 ps.setString(1, description.getIdDoc());
                 ps.setInt(2, description.getPosition());
@@ -104,11 +91,11 @@ public class DescriptionDaoJdbc implements DescriptionDao {
             if (result == descriptionList.size()) {
                 log.debug("Try commit");
                 connPostgres.commit();
-                log.debug("Commit - OK. {} Description saved/updated.", result);
+                log.debug("Commit - OK. {} rows saved/updated.", result);
                 return true;
             }
             else {
-                log.debug("Saved/Updated {}, but need to save/update {} Description. Not equals!!!", result, descriptionList.size());
+                log.debug("Saved/Updated {}, but need to save/update {} rows. Not equals!!!", result, descriptionList.size());
                 connPostgres.rollback();
             }
         } catch (SQLException e) {
@@ -130,28 +117,6 @@ public class DescriptionDaoJdbc implements DescriptionDao {
 
     @Override
     public boolean deleteAll(Collection<String> listId) {
-        try {
-            int result = 0;
-            for (String id : listId) {
-                PreparedStatement ps = connPostgres.prepareStatement(SQL_DELETE);
-                ps.setString(1, id);
-                ps.addBatch();
-                int[] numberOfUpdates = ps.executeBatch();
-                result += IntStream.of(numberOfUpdates).sum();
-            }
-            if (result == listId.size()) {
-                log.debug("Try commit");
-                connPostgres.commit();
-                log.debug("Commit - OK. {} Description deleted.", result);
-                return true;
-            }
-            else {
-                connPostgres.rollback();
-                log.debug("Deleted {}, but need to delete {} Description. Not equals!!!", result, listId.size());
-            }
-        } catch (SQLException e) {
-            log.warn("Exception during delete {} old 'Description'. SQL = {}.", listId.size() , SQL_DELETE, e);
-        }
-        return false;
+        return new DefaultDaoJdbc().deleteAll(listId, connPostgres, SQL_DELETE);
     }
 }

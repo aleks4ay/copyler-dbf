@@ -24,10 +24,8 @@ public class TmcDaoJdbc implements TmcDao {
     private static final String SQL_UPDATE =
             "UPDATE tmc SET id_parent=?, code=?, descr=?, is_folder=?, descr_all=?, type=? WHERE id = ?;";
 
-
     public TmcDaoJdbc(Connection conn) {
         this.connPostgres = conn;
-        log.debug("Get connection to PostgreSQL from {}.", UtilDao.class);
     }
 
     @Override
@@ -35,15 +33,10 @@ public class TmcDaoJdbc implements TmcDao {
         try {
             PreparedStatement statement = connPostgres.prepareStatement(SQL_GET_ONE);
             statement.setString(1, id);
-            log.debug("Select 'Tmc'. SQL = {}. id = {}.", SQL_GET_ONE, id);
             ResultSet rs = statement.executeQuery();
-
             rs.next();
-            log.debug("return new 'Tmc'. id = {}.", id);
-
             return new Tmc(id, rs.getString("id_parent"), rs.getString("code"), rs.getString("descr"),
                     rs.getInt("is_folder"), rs.getString("descr_all"), rs.getString("type"));
-
         } catch (SQLException e) {
             log.warn("Exception during reading 'Tmc' with id = {}.", id, e);
         }
@@ -57,7 +50,6 @@ public class TmcDaoJdbc implements TmcDao {
         try {
             Statement statement = connPostgres.createStatement();
             ResultSet rs = statement.executeQuery(SQL_GET_ALL);
-            log.debug("Select all 'Tmc'. SQL = {}.", SQL_GET_ALL);
             while (rs.next()) {
                 result.add(new Tmc(rs.getString("id"), rs.getString("id_parent"), rs.getString("code"), rs.getString("descr"),
                         rs.getInt("is_folder"), rs.getString("descr_all"), rs.getString("type")));
@@ -71,14 +63,11 @@ public class TmcDaoJdbc implements TmcDao {
         return null;
     }
 
-
     public boolean saveOrUpdateAll(List<Tmc> tmcList, String sql) {
         try {
             int result = 0;
             for (Tmc tmc : tmcList) {
                 PreparedStatement ps = connPostgres.prepareStatement(sql);
-                log.debug("Prepared 'Tmc' to batch. SQL = {}. Tmc = {}.", sql, tmc);
-
                 ps.setString(1, tmc.getIdParent());
                 ps.setString(2, tmc.getCode());
                 ps.setString(3, tmc.getDescr());
@@ -86,7 +75,6 @@ public class TmcDaoJdbc implements TmcDao {
                 ps.setString(5, tmc.getDescrAll());
                 ps.setString(6, tmc.getType());
                 ps.setString(7, tmc.getId());
-
                 ps.addBatch();
                 int[] numberOfUpdates = ps.executeBatch();
                 result += IntStream.of(numberOfUpdates).sum();
@@ -107,7 +95,6 @@ public class TmcDaoJdbc implements TmcDao {
         return false;
     }
 
-
     @Override
     public boolean saveAll(List<Tmc> tmcList) {
         return saveOrUpdateAll(tmcList, SQL_SAVE);
@@ -120,32 +107,8 @@ public class TmcDaoJdbc implements TmcDao {
 
     @Override
     public boolean deleteAll(Collection<String> listId) {
-        try {
-            int result = 0;
-            for (String id : listId) {
-                log.debug("Prepared old 'Tmc' for delete to batch. SQL = {}. Id = {}.", SQL_DELETE, id);
-                PreparedStatement ps = connPostgres.prepareStatement(SQL_DELETE);
-                ps.setString(1, id);
-                ps.addBatch();
-                int[] numberOfUpdates = ps.executeBatch();
-                result += IntStream.of(numberOfUpdates).sum();
-            }
-            if (result == listId.size()) {
-                log.debug("Try commit");
-                connPostgres.commit();
-                log.debug("Commit - OK. {} Tmc deleted.", result);
-                return true;
-            }
-            else {
-                connPostgres.rollback();
-                log.debug("Deleted {}, but need to delete {} Tmc. Not equals!!!", result,listId.size());
-            }
-        } catch (SQLException e) {
-            log.warn("Exception during delete {} old 'Tmc'. SQL = {}.", listId.size() , SQL_DELETE, e);
-        }
-        return false;
+        return new DefaultDaoJdbc().deleteAll(listId, connPostgres, SQL_DELETE);
     }
 }
-
 
 

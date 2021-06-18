@@ -1,6 +1,5 @@
 package kiyv.domain.dao;
 
-import kiyv.domain.model.Description;
 import kiyv.domain.model.Invoice;
 import kiyv.domain.model.Manufacture;
 import kiyv.domain.model.Status;
@@ -52,21 +51,15 @@ public class StatusDaoJdbc implements StatusDao {
 
     public StatusDaoJdbc(Connection conn) {
         this.connPostgres = conn;
-        log.debug("Get connection to PostgreSQL from {}.", UtilDao.class);
     }
-
 
     @Override
     public Status getById(String id) {
         try {
             PreparedStatement statement = connPostgres.prepareStatement(SQL_GET_ONE);
             statement.setString(1, id);
-            log.debug("Select 'Status'. SQL = {}. Id = {}.", SQL_GET_ONE, id);
-
             ResultSet rs = statement.executeQuery();
             rs.next();
-
-            log.debug("return new 'Status'. Id = {}.", id);
             long[] statusTimeList = new long[25];
             for (int i = 0; i < 25; i++) {
                 statusTimeList[i] = rs.getLong("time_" + i);
@@ -74,7 +67,6 @@ public class StatusDaoJdbc implements StatusDao {
             return new Status(id, rs.getString("iddoc"), rs.getInt("type_index"), rs.getInt("status_index"),
                     rs.getString("designer_name"), rs.getString("descr_first"), rs.getInt("is_technologichka"),
                     rs.getInt("is_parsing"), statusTimeList);
-
         } catch (SQLException e) {
             log.warn("Exception during reading 'Status' with Code = {}.", id, e);
         }
@@ -88,11 +80,8 @@ public class StatusDaoJdbc implements StatusDao {
         try {
             Statement statement = connPostgres.createStatement();
             ResultSet rs = statement.executeQuery(SQL_GET_ALL);
-            log.debug("Select all 'Statuses'. SQL = {}.", SQL_GET_ALL);
-
             while (rs.next()) {
                 String id = rs.getString("id");
-
                 long[] statusTimeList = new long[25];
                 for (int i = 0; i < 25; i++) {
                     statusTimeList[i] = rs.getLong("time_" + i);
@@ -118,9 +107,6 @@ public class StatusDaoJdbc implements StatusDao {
             int result = 0;
             for (Status status : statusList) {
                 PreparedStatement ps = connPostgres.prepareStatement(SQL_INSERT_BEGIN_VALUE);
-
-                log.debug("Prepared 'Status' to batch. SQL = {}. {}.", SQL_INSERT_BEGIN_VALUE, status);
-
                 ps.setString(1, status.getId());
                 ps.setString(2, status.getIdDoc());
                 ps.setLong(3, status.getStatusTimeList()[0]);
@@ -129,7 +115,6 @@ public class StatusDaoJdbc implements StatusDao {
                 ps.setInt(6, status.getStatusIndex());
                 ps.setInt(7, status.getIsTechno());
                 ps.setString(8, status.getDescrFirst());
-
                 ps.addBatch();
                 int[] numberOfUpdates = ps.executeBatch();
                 result += IntStream.of(numberOfUpdates).sum();
@@ -156,9 +141,6 @@ public class StatusDaoJdbc implements StatusDao {
             int result = 0;
             for (Status status : statusList) {
                 PreparedStatement ps = connPostgres.prepareStatement(SQL_UPDATE_BEGIN_VALUE);
-
-                log.debug("Prepared 'Status' to batch. SQL = {}. {}.", SQL_UPDATE_BEGIN_VALUE, status);
-
                 ps.setString(1, status.getDescrFirst());
                 ps.setLong(2, DateConverter.getNowDate());
                 ps.setString(3, status.getId());
@@ -189,9 +171,6 @@ public class StatusDaoJdbc implements StatusDao {
             int result = 0;
             for (Status status : statusList) {
                 PreparedStatement ps = connPostgres.prepareStatement(sql);
-
-                log.debug("Prepared 'Status' to batch. SQL = {}. {}.", sql, status);
-
                 ps.setString(33, status.getId());
                 ps.setString(1, status.getIdDoc());
                 for (int i=0; i<25; i++) {
@@ -242,23 +221,16 @@ public class StatusDaoJdbc implements StatusDao {
                 .collect(Collectors.toList());
         try {
             int result = 0;
-
             for (Manufacture manufacture : manufactureListAfterFilter) {
                 PreparedStatement ps = connPostgres.prepareStatement(SQL_UPDATE_TIME_FROM_MANUF);
-
-                log.debug("Prepared 'Status' to batch. SQL = {}. {}.", SQL_UPDATE_TIME_FROM_MANUF, manufacture);
-
                 ps.setLong(1, manufacture.getTime21());
                 ps.setString(2, manufacture.getIdOrder());
-
                 ps.addBatch();
                 int[] numberOfUpdates = ps.executeBatch();
                 result += IntStream.of(numberOfUpdates).sum();
             }
-
             Statement statement = connPostgres.createStatement();
             statement.executeUpdate(SQL_UPDATE_STATUS_FROM_MANUF);
-
             if (result >= manufactureListAfterFilter.size()) {
                 log.debug("Try commit");
                 connPostgres.commit();
@@ -281,23 +253,16 @@ public class StatusDaoJdbc implements StatusDao {
     public boolean saveFromInvoice(List<Invoice> invoiceList) {
         try {
             int result = 0;
-
             for (Invoice invoice : invoiceList) {
                 PreparedStatement ps = connPostgres.prepareStatement(SQL_UPDATE_TIME_FROM_INVOICE);
-
-                log.debug("Prepared 'Status' to batch. SQL = {}. {}.", SQL_UPDATE_TIME_FROM_INVOICE, invoice);
-
                 ps.setLong(1, invoice.getTime22());
                 ps.setString(2, invoice.getIdOrder());
-
                 ps.addBatch();
                 int[] numberOfUpdates = ps.executeBatch();
                 result += IntStream.of(numberOfUpdates).sum();
             }
-
             Statement statement = connPostgres.createStatement();
             statement.executeUpdate(SQL_UPDATE_STATUS_FROM_INVOICE);
-
             if (result >= invoiceList.size()) {
                 log.debug("Try commit");
                 connPostgres.commit();
@@ -318,28 +283,6 @@ public class StatusDaoJdbc implements StatusDao {
 
     @Override
     public boolean deleteAll(Collection<String> listId) {
-        try {
-            int result = 0;
-            for (String id : listId) {
-                PreparedStatement ps = connPostgres.prepareStatement(SQL_DELETE);
-                ps.setString(1, id);
-                ps.addBatch();
-                int[] numberOfUpdates = ps.executeBatch();
-                result += IntStream.of(numberOfUpdates).sum();
-            }
-            if (result == listId.size()) {
-                log.debug("Try commit");
-                connPostgres.commit();
-                log.debug("Commit - OK. {} Statuses deleted.", result);
-                return true;
-            }
-            else {
-                connPostgres.rollback();
-                log.debug("Deleted {}, but need to delete {} Statuses. Not equals!!!", result, listId.size());
-            }
-        } catch (SQLException e) {
-            log.warn("Exception during delete {} old 'Statuses'. SQL = {}.", listId.size() , SQL_DELETE, e);
-        }
-        return false;
+        return new DefaultDaoJdbc().deleteAll(listId, connPostgres, SQL_DELETE);
     }
 }

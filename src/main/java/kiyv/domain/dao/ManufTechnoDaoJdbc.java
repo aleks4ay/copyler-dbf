@@ -29,7 +29,6 @@ public class ManufTechnoDaoJdbc implements ManufDao {
 
     public ManufTechnoDaoJdbc(Connection conn) {
         this.connPostgres = conn;
-        log.debug("Get connection to PostgreSQL from {}.", UtilDao.class);
     }
 
     @Override
@@ -37,18 +36,12 @@ public class ManufTechnoDaoJdbc implements ManufDao {
         try {
             PreparedStatement statement = connPostgres.prepareStatement(SQL_GET_ONE);
             statement.setString(1, id);
-            log.debug("Select 'Manufacture' for Techno. SQL = {}. Id = {}.", SQL_GET_ONE, id);
-
             ResultSet rs = statement.executeQuery();
             rs.next();
-
-            log.debug("return new 'Manufacture' for Techno. Id = {}.", id);
-
             return new Manufacture(id, rs.getString("id_manuf"), rs.getInt("position"),
                     rs.getString("docno"), rs.getString("id_order"), rs.getTimestamp("time_manuf"), 0L,
                     rs.getInt("quantity"), rs.getString("id_tmc"), rs.getString("descr_second"), rs.getInt("size_a"),
                     rs.getInt("size_b"), rs.getInt("size_c"), rs.getString("embodiment"));
-
         } catch (SQLException e) {
             log.warn("Exception during reading 'Manufacture' for Techno with Id = {}.", id, e);
         }
@@ -62,11 +55,8 @@ public class ManufTechnoDaoJdbc implements ManufDao {
         try {
             Statement statement = connPostgres.createStatement();
             ResultSet rs = statement.executeQuery(SQL_GET_ALL);
-            log.debug("Select all 'Manufactures' for Techno. SQL = {}.", SQL_GET_ALL);
-
             while (rs.next()) {
                 String id = rs.getString("id");
-
                 Manufacture manufacture = new Manufacture(id, rs.getString("id_manuf"), rs.getInt("position"),
                         rs.getString("docno"), rs.getString("id_order"), rs.getTimestamp("time_manuf"), 0L,
                         rs.getInt("quantity"), rs.getString("id_tmc"), rs.getString("descr_second"), rs.getInt("size_a"),
@@ -87,8 +77,6 @@ public class ManufTechnoDaoJdbc implements ManufDao {
             int result = 0;
             for (Manufacture manufacture : manufactureList) {
                 PreparedStatement ps = connPostgres.prepareStatement(sql);
-
-                log.debug("Prepared 'Manufacture' for Techno to batch. SQL = {}. {}.", sql, manufacture);
                 ps.setString(13, manufacture.getId());
                 ps.setString(1, manufacture.getIdDoc());
                 ps.setString(2, manufacture.getDocNumber());
@@ -102,7 +90,6 @@ public class ManufTechnoDaoJdbc implements ManufDao {
                 ps.setInt(10, manufacture.getSizeB());
                 ps.setInt(11, manufacture.getSizeC());
                 ps.setString(12, manufacture.getEmbodiment());
-
                 ps.addBatch();
                 int[] numberOfUpdates = ps.executeBatch();
                 result += IntStream.of(numberOfUpdates).sum();
@@ -137,29 +124,6 @@ public class ManufTechnoDaoJdbc implements ManufDao {
 
     @Override
     public boolean deleteAll(Collection<String> listId) {
-        try {
-            int result = 0;
-            for (String idDoc : listId) {
-                PreparedStatement ps = connPostgres.prepareStatement(SQL_DELETE);
-                ps.setString(1, idDoc);
-                ps.addBatch();
-                int[] numberOfUpdates = ps.executeBatch();
-                result += IntStream.of(numberOfUpdates).sum();
-            }
-            if (result == listId.size()) {
-                log.debug("Try commit");
-                connPostgres.commit();
-                log.debug("Commit - OK. {} Manufactures for Techno deleted.", result);
-                return true;
-            }
-            else {
-                connPostgres.rollback();
-                log.debug("Deleted {}, but need to delete {} Manufactures for Techno. Not equals!!!", result, listId.size());
-            }
-        } catch (SQLException e) {
-            log.warn("Exception during delete {} old 'Manufactures' for Techno. SQL = {}.", listId.size() , SQL_DELETE, e);
-        }
-        return false;
+        return new DefaultDaoJdbc().deleteAll(listId, connPostgres, SQL_DELETE);
     }
-
 }

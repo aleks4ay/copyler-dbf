@@ -9,7 +9,7 @@ import java.util.Properties;
 public final class DataControl {
 
     public static String fileName;
-    public static String fileName1C;
+    private static String fileName1C;
     private static final Logger log = LoggerFactory.getLogger(DataControl.class);
 
     static {
@@ -19,7 +19,6 @@ public final class DataControl {
             properties.load(in);
             fileName = properties.getProperty("fileName");
             fileName1C = properties.getProperty("fileName1C");
-            log.debug("Loaded properties as Stream: dbf.serverPath = {}, dbf.path = {}.", fileName, fileName1C);
         } catch (IOException e) {
             log.warn("Exception during Loaded properties from file {}.", new File("/persistence.properties").getPath(), e);
         }
@@ -27,7 +26,6 @@ public final class DataControl {
 
     // APPEND new time
     public static boolean writeTimeChange(){
-
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
                 new FileOutputStream(new File(fileName), true), "UTF8"))) {
             long millis = DateConverter.getNowDate();
@@ -42,12 +40,10 @@ public final class DataControl {
             return false;
         }
         return true;
-
     }
 
     // REWRITE time from 1C
     public static boolean writeTimeChangeFrom1C(){
-
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
                 new FileOutputStream(new File(fileName1C), false), "UTF8"))) {
             long millis = DateConverter.getNowDate();
@@ -63,6 +59,5 @@ public final class DataControl {
         }
         return true;
     }
-
 }
 

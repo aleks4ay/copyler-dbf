@@ -40,7 +40,6 @@ public class OrderDaoJdbc implements OrderDao {
 
     public OrderDaoJdbc(Connection conn) {
         this.connPostgres = conn;
-        log.debug("Get connection to PostgreSQL from {}.", UtilDao.class);
     }
 
     @Override
@@ -48,17 +47,12 @@ public class OrderDaoJdbc implements OrderDao {
         try {
             PreparedStatement statement = connPostgres.prepareStatement(SQL_GET_ONE);
             statement.setInt(1, bigNumber);
-            log.debug("Select 'Order'. SQL = {}. bigNumber = {}.", SQL_GET_ONE, bigNumber);
-
             ResultSet rs = statement.executeQuery();
             rs.next();
-
-            log.debug("return new 'Order'. bigNumber = {}.", bigNumber);
             return new Order(bigNumber, rs.getString("iddoc"), rs.getString("id_client"), rs.getString("id_manager"),
                     rs.getInt("duration"), rs.getString("docno"), rs.getInt("pos_count"), rs.getString("client_name"),
                     rs.getString("manager_name"), rs.getTimestamp("t_create"), rs.getTimestamp("t_factory"),
                     rs.getTimestamp("t_end"), rs.getDouble("price"));
-
         } catch (SQLException e) {
             log.warn("Exception during reading 'Order' with bigNumber = {}.", bigNumber, e);
         }
@@ -72,17 +66,12 @@ public class OrderDaoJdbc implements OrderDao {
         try {
             Statement statement = connPostgres.createStatement();
             ResultSet rs = statement.executeQuery(SQL_GET_ALL);
-            log.debug("Select all 'Orders'. SQL = {}.", SQL_GET_ALL);
-
             while (rs.next()) {
                 int bigNumber = rs.getInt("big_number");
-//                log.debug("return new 'Order'. bigNumber = {}.", bigNumber);
-
                 Order order = new Order(bigNumber, rs.getString("iddoc"), rs.getString("id_client"), rs.getString("id_manager"),
                         rs.getInt("duration"), rs.getString("docno"), rs.getInt("pos_count"), rs.getString("client_name"),
                         rs.getString("manager_name"), rs.getTimestamp("t_create"), rs.getTimestamp("t_factory"),
                         rs.getTimestamp("t_end"), rs.getDouble("price"));
-
                 result.add(order);
             }
             log.debug("Was read {} Orders from Postgres.", result.size());
@@ -100,12 +89,9 @@ public class OrderDaoJdbc implements OrderDao {
         try {
             Statement statement = connPostgres.createStatement();
             ResultSet rs = statement.executeQuery(SQL_GET_ALL_ID);
-            log.debug("Select all 'IdDoc'. SQL = {}.", SQL_GET_ALL_ID);
-
             while (rs.next()) {
                  result.add(rs.getString("iddoc"));
             }
-            log.debug("Was read {} IdDoc Orders.", result.size());
             return result;
         } catch (SQLException e) {
             log.warn("Exception during reading all 'Order IdDoc'.", e);
@@ -120,8 +106,6 @@ public class OrderDaoJdbc implements OrderDao {
         try {
             Statement statement = connPostgres.createStatement();
             ResultSet rs = statement.executeQuery(SQL_GET_ALL_DATE_FACTORY);
-            log.debug("Select all 'dateToFactory'. SQL = {}.", SQL_GET_ALL_DATE_FACTORY);
-
             while (rs.next()) {
                 result.put(rs.getString("iddoc"), rs.getTimestamp("t_factory"));
             }
@@ -139,9 +123,6 @@ public class OrderDaoJdbc implements OrderDao {
             int result = 0;
             for (Order order : orderList) {
                 PreparedStatement ps = connPostgres.prepareStatement(sql);
-
-                log.debug("Prepared 'Order' to batch. SQL = {}. {}.", sql, order);
-
                 ps.setString(19, order.getIdDoc());
                 ps.setInt(1, order.getBigNumber());
                 ps.setString(2, order.getIdClient());
@@ -206,13 +187,9 @@ public class OrderDaoJdbc implements OrderDao {
             int result = 0;
             for (Manufacture manuf : manufactureListAfterFilter) {
                 PreparedStatement ps = connPostgres.prepareStatement(SQL_UPDATE_TIME_MANUF);
-
-                log.debug("Prepared 'Order' to batch. SQL = {}. {}.", SQL_UPDATE_TIME_MANUF, manuf);
-
                 ps.setTimestamp(1, manuf.getTimeManufacture());
                 ps.setString(2, manuf.getDocNumber());
                 ps.setString(3, manuf.getIdOrder());
-
                 ps.addBatch();
                 int[] numberOfUpdates = ps.executeBatch();
                 result += IntStream.of(numberOfUpdates).sum();
@@ -241,24 +218,18 @@ public class OrderDaoJdbc implements OrderDao {
             int result = 0;
             for (Invoice invoice : invoicesAfterFilter) {
                 PreparedStatement ps = connPostgres.prepareStatement(SQL_UPDATE_PAYMENT);
-
-                log.debug("Prepared 'Order' to batch. SQL = {}. {}.", SQL_UPDATE_PAYMENT, invoice);
-
                 ps.setTimestamp(1, invoice.getTimeInvoice());
                 ps.setDouble(2, invoice.getPrice());
                 ps.setString(3, invoice.getDocNumber());
                 ps.setString(4, invoice.getIdOrder());
-
                 ps.addBatch();
                 int[] numberOfUpdates = ps.executeBatch();
                 result += IntStream.of(numberOfUpdates).sum();
             }
-
             PreparedStatement ps2 = connPostgres.prepareStatement(SQL_UPDATE_TIME_INVOICE);
             ps2.setDouble(1, precision);
             ps2.executeUpdate();
             ps2.addBatch();
-
             if (result == invoicesAfterFilter.size()) {
                 log.debug("Try commit");
                 connPostgres.commit();
@@ -279,28 +250,6 @@ public class OrderDaoJdbc implements OrderDao {
 
     @Override
     public boolean deleteAll(Collection<String> listIdDoc) {
-        try {
-            int result = 0;
-            for (String idDoc : listIdDoc) {
-                PreparedStatement ps = connPostgres.prepareStatement(SQL_DELETE);
-                ps.setString(1, idDoc);
-                ps.addBatch();
-                int[] numberOfUpdates = ps.executeBatch();
-                result += IntStream.of(numberOfUpdates).sum();
-            }
-            if (result == listIdDoc.size()) {
-                log.debug("Try commit");
-                connPostgres.commit();
-                log.debug("Commit - OK. {} Order deleted.", result);
-                return true;
-            }
-            else {
-                connPostgres.rollback();
-                log.debug("Deleted {}, but need to delete {} Order. Not equals!!!", result, listIdDoc.size());
-            }
-        } catch (SQLException e) {
-            log.warn("Exception during delete {} old 'Order'. SQL = {}.", listIdDoc.size() , SQL_DELETE, e);
-        }
-        return false;
+        return new DefaultDaoJdbc().deleteAll(listIdDoc, connPostgres, SQL_DELETE);
     }
 }

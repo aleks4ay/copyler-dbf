@@ -4,33 +4,36 @@ import com.linuxense.javadbf.DBFException;
 import com.linuxense.javadbf.DBFReader;
 import com.linuxense.javadbf.DBFRow;
 import com.linuxense.javadbf.DBFUtils;
-import kiyv.domain.model.Tmc;
+import kiyv.domain.tools.File1CReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class TmcBalanceReader {
-    private String dbfPath = null;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    public TmcBalanceReader(String dbfPath) {
-        this.dbfPath = dbfPath;
+    public static void main(String[] args) {
+        String fileName = "c:/1C/Copy250106/RG1253.DBF";
+        for (Integer i : new TmcBalanceReader().getAll(File1CReader.file2byteArray(fileName)).values()) {
+            System.out.println(i);
+        }
     }
 
-    public Map<String, Integer> getAll() {
+    public Map<String, Integer> getAll(byte[] dataByteArray) {
         Map<String, Integer> tmcBalanceMap = new HashMap<>();
+        if (dataByteArray.length == 0) {
+            return tmcBalanceMap;
+        }
         DBFReader reader = null;
         try {
-            reader = new DBFReader(new FileInputStream(dbfPath + "\\RG1253.DBF"));
-
+            InputStream is = new ByteArrayInputStream(dataByteArray);
+            reader = new DBFReader(is);
             DBFRow row;
             while ((row = reader.nextRow()) != null) {
                 if (! row.getString("SP4643").equals("     C")) {
@@ -38,23 +41,16 @@ public class TmcBalanceReader {
                 }
                 String idTmc = row.getString("SP1249");
                 Integer count = row.getInt("SP1251");
-
                 tmcBalanceMap.put(idTmc, count);
-
             }
             log.debug("Was read {} TMC Balance from 1C 'RG1253'.", tmcBalanceMap.size());
-
             return tmcBalanceMap;
-
-        } catch (DBFException | IOException e) {
-            log.warn("Exception during reading file 'RG1253.dbf'.", e);
-        } catch (Exception e) {
+        } catch (DBFException e) {
             log.warn("Exception during writing all 'TMC Balance'.", e);
         }
         finally {
             DBFUtils.close(reader);
         }
-
         log.debug("TMC Balance not found.");
         return null;
     }

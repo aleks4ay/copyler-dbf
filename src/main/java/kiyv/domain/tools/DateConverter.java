@@ -4,15 +4,14 @@ import java.util.Calendar;
 import java.util.Date;
 
 public final class DateConverter {
-    public static Calendar calendar = Calendar.getInstance();
-    public static Calendar calendarAfterPeriod = Calendar.getInstance();
-
+    private static Calendar calendar = Calendar.getInstance();
+    private static Calendar calendarAfterPeriod = Calendar.getInstance();
 
     public static long getNowDate(){
         return new Date().getTime();
     }
 
-    public static int getYear(long millis) {
+    private static int getYear(long millis) {
         calendar.setTimeInMillis(millis);
         return calendar.get(Calendar.YEAR);
     }
@@ -24,19 +23,12 @@ public final class DateConverter {
 
     public static long offset (long millisecond, int duration) {
         calendarAfterPeriod.setTimeInMillis(millisecond);
-        calendarAfterPeriod.add(Calendar.DATE, Integer.valueOf(duration));
+        calendarAfterPeriod.add(Calendar.DATE, duration);
         return calendarAfterPeriod.getTimeInMillis();
     }
 
-/*    public static String dateFromLongToString(long millis) {
-        calendar.setTimeInMillis(millis);
-        String date = calendar.get(Calendar.DATE);
-        calendar.get(Calendar.HOUR);
-        calendar.get(Calendar.MINUTE);
-    }*/
-
     public static String dateToString(long millis) {
-        if ( (Long)millis == null | millis == 0 ) {
+        if (millis == 0) {
             return "-";
         }
         String date = "";
@@ -57,7 +49,7 @@ public final class DateConverter {
         return date + "." + calendar.get(Calendar.YEAR);
     }
 
-    public static String timeToString(long millis) {
+    static String timeToString(long millis) {
         calendar.setTimeInMillis(millis);
         String time = "";
         int hour, min;
@@ -67,7 +59,6 @@ public final class DateConverter {
         else {
             time += hour + ":";
         }
-
         if ((min = calendar.get(Calendar.MINUTE) )<10) {
             time += "0" + min;
         }
