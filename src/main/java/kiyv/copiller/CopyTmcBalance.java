@@ -18,7 +18,7 @@ public class CopyTmcBalance {
         log.info("   writing 'T M C-techno'.");
         byte[] bytesTmcBalance = File1CReader.file2byteArray(tmcBalanceFileName);
         UtilDao utilDao = new UtilDao();
-        Connection connPostgres = utilDao.getConnPostgres();
+        Connection connPostgres = utilDao.getConnPostgresWithoutException();
         TmcDaoTechnoBalanceJdbc tmcDao = new TmcDaoTechnoBalanceJdbc(connPostgres);
         TmcBalanceReader balanceReader = new TmcBalanceReader();
         Map<String, Integer> oldBalance = tmcDao.getAllBalance();

@@ -24,7 +24,7 @@ public class CopyManuf {
         log.info("   writing 'M A N U F A C T U R E'.");
         byte[] manufactureBytes = File1CReader.file2byteArray(manufactureFileNames);
         UtilDao utilDao = new UtilDao();
-        Connection connPostgres = utilDao.getConnPostgres();
+        Connection connPostgres = utilDao.getConnPostgresWithoutException();
         StatusDao statusDao = new StatusDaoJdbc(connPostgres);
         ManufDao manufDao = new ManufDaoJdbc(connPostgres);
         OrderDao orderDao = new OrderDaoJdbc(connPostgres);

@@ -23,7 +23,7 @@ public class CopyInvoiceDescription {
         log.info("   writing 'I N V O I C E   D E S C R I P T I O N'.");
         byte[] bytesInvoiceDescr = File1CReader.file2byteArray(invoiceDescrFileName);
         UtilDao utilDao = new UtilDao();
-        Connection connPostgres = utilDao.getConnPostgres();
+        Connection connPostgres = utilDao.getConnPostgresWithoutException();
         InvoiceDao invoiceDao = new InvoiceDaoJdbc(connPostgres);
         InvoiceDescriptionDaoJdbc invoiceDescriptionDaoJdbc = new InvoiceDescriptionDaoJdbc(connPostgres);
         Map<String, Invoice> mapInvoice = invoiceDao.getAll()

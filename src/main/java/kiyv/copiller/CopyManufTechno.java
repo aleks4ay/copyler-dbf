@@ -4,7 +4,6 @@ import kiyv.domain.dao.ManufDao;
 import kiyv.domain.dao.ManufTechnoDaoJdbc;
 import kiyv.domain.dao.TmcDaoTechnoJdbc;
 import kiyv.domain.dao.UtilDao;
-import kiyv.domain.javadbf.JournalReader;
 import kiyv.domain.javadbf.ManufReader;
 import kiyv.domain.model.Journal;
 import kiyv.domain.model.Manufacture;
@@ -27,7 +26,7 @@ public class CopyManufTechno {
         log.info("   writing 'M A N U F A C T U R E for Techno'.");
         byte[] manufactureBytes = File1CReader.file2byteArray(manufactureFileNames);
         UtilDao utilDao = new UtilDao();
-        Connection connPostgres = utilDao.getConnPostgres();
+        Connection connPostgres = utilDao.getConnPostgresWithoutException();
         ManufDao manufTechnoDao = new ManufTechnoDaoJdbc(connPostgres);
         List<Tmc> tmcTechnoList = new TmcDaoTechnoJdbc(connPostgres).getAll();
         Map<String, Manufacture> mapManuf = new ManufReader().getAll(manufactureBytes);

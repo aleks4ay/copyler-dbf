@@ -25,7 +25,7 @@ public class CopyOrder {
         byte[] workerBytes = File1CReader.file2byteArray(workerFileName);
         byte[] orderBytes = File1CReader.file2byteArray(orderFileName);
         UtilDao utilDao = new UtilDao();
-        Connection connPostgres = utilDao.getConnPostgres();
+        Connection connPostgres = utilDao.getConnPostgresWithoutException();
         OrderDao orderDao = new OrderDaoJdbc(connPostgres);
         Map<String, String> mapManagerName = new WorkerReader().getAll(workerBytes);
         Map<String, String> mapClientName = new ClientReader().getAll(clientBytes)

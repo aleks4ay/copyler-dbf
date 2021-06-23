@@ -52,7 +52,6 @@ public class CopyNewData1C {
         }
     }
 
-
     public static void main(String[] args) throws ClassNotFoundException, SQLException, IOException {
         update();
     }

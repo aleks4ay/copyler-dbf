@@ -2,7 +2,6 @@ package kiyv.copiller;
 
 import kiyv.domain.dao.*;
 import kiyv.domain.javadbf.InvoiceReader;
-import kiyv.domain.javadbf.JournalReader;
 import kiyv.domain.model.Invoice;
 import kiyv.domain.model.Journal;
 import kiyv.domain.tools.File1CReader;
@@ -26,7 +25,7 @@ public class CopyInvoice {
         log.info("   writing 'I N V O I C E'.");
         byte[] bytesInvoice = File1CReader.file2byteArray(invoiceFileNames);
         UtilDao utilDao = new UtilDao();
-        Connection connPostgres = utilDao.getConnPostgres();
+        Connection connPostgres = utilDao.getConnPostgresWithoutException();
         StatusDao statusDao = new StatusDaoJdbc(connPostgres);
         InvoiceDao invoiceDao = new InvoiceDaoJdbc(connPostgres);
         OrderDao orderDao = new OrderDaoJdbc(connPostgres);

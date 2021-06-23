@@ -27,7 +27,7 @@ public class CopyTmc {
         log.info("   writing 'T M C'.");
         byte[] bytesTmc = File1CReader.file2byteArray(fileName);
         UtilDao utilDao = new UtilDao();
-        Connection connPostgres = utilDao.getConnPostgres();
+        Connection connPostgres = utilDao.getConnPostgresWithoutException();
         TmcDao tmcDao = new TmcDaoJdbc(connPostgres);
         TmcReader tmcReader = new TmcReader();
         List<Tmc> listNewTmc = new ArrayList<>();

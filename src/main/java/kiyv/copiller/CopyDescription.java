@@ -28,7 +28,7 @@ public class CopyDescription {
         byte[] byteArrayEmbodyment = File1CReader.file2byteArray(embodimentFileName);
         byte[] byteArrayDescription = File1CReader.file2byteArray(descriptionFileName);
         UtilDao utilDao = new UtilDao();
-        Connection connPostgres = utilDao.getConnPostgres();
+        Connection connPostgres = utilDao.getConnPostgresWithoutException();
         OrderDao orderDao = new OrderDaoJdbc(connPostgres);
         TmcDao tmcDao = new TmcDaoJdbc(connPostgres);
         TmcDao tmcDaoTechno = new TmcDaoTechnoJdbc(connPostgres);
