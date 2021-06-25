@@ -20,12 +20,12 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 public class InvoiceDescriptionReader {
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    public static void main(String[] args) {
+/*    public static void main(String[] args) {
         String fileName = "c:/1C/Copy250106/DT3592.DBF";
         new InvoiceDescriptionReader()
                 .getAll(File1CReader.file2byteArray(fileName))
                 .forEach(System.out::println);
-    }
+    }*/
 
     public List<InvoiceDescription> getAll(byte[] dataByteArray) {
         List<InvoiceDescription> invoiceDescriptions = new ArrayList<>();
@@ -60,6 +60,6 @@ public class InvoiceDescriptionReader {
             DBFUtils.close(reader);
         }
         log.debug("Invoice not found.");
-        return null;
+        return new ArrayList<>();
     }
 }

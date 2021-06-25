@@ -26,7 +26,7 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 public class InvoiceReader {
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    public static void main(String[] args) {
+/*    public static void main(String[] args) {
         String fileName = "c:/1C/Copy250106/DH3592.DBF";
         Map<String, Invoice> invoices = new InvoiceReader().getAll(File1CReader.file2byteArray(fileName));
         if (invoices.size() > 0) {
@@ -34,7 +34,7 @@ public class InvoiceReader {
                 System.out.println(i);
             }
         }
-    }
+    }*/
 
     public Map<String, Invoice> getAll(byte[] dataByteArray) {
         Map<String, Invoice> mapInvoice = new HashMap<>();
@@ -66,6 +66,6 @@ public class InvoiceReader {
             DBFUtils.close(reader);
         }
         log.debug("Invoice not found.");
-        return null;
+        return new HashMap<>();
     }
 }

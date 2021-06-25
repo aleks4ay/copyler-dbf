@@ -75,6 +75,6 @@ public class ManufReader {
             DBFUtils.close(reader);
         }
         log.debug("Manufacture not found.");
-        return null;
+        return new HashMap<>();
     }
 }

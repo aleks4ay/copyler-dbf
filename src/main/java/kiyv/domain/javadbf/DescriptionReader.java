@@ -18,12 +18,12 @@ import java.util.List;
 public class DescriptionReader  {
     private static final Logger log = LoggerFactory.getLogger(DescriptionReader.class);
 
-    public static void main(String[] args) {
+/*    public static void main(String[] args) {
         String fileName = "c:/1C/Copy250106/DT1898.DBF";
         new DescriptionReader()
                 .getAll(File1CReader.file2byteArray(fileName))
                 .forEach(System.out::println);
-    }
+    }*/
 
     public List<Description> getAll(byte[] dataByteArray) {
         List<Description> descriptionList = new ArrayList<>();
@@ -61,6 +61,6 @@ public class DescriptionReader  {
             DBFUtils.close(reader);
         }
         log.debug("Description not found.");
-        return null;
+        return new ArrayList<>();
     }
 }

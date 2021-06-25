@@ -34,7 +34,7 @@ public class TmcDaoTechnoBalanceJdbc {
             log.warn("Exception during reading all 'Balance of Tmc-techno'.", e);
         }
         log.debug("Balance of Tmc-techno not found.");
-        return null;
+        return new HashMap<>();
     }
 
 

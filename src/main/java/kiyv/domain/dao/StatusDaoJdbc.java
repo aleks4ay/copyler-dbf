@@ -98,7 +98,7 @@ public class StatusDaoJdbc implements StatusDao {
             log.warn("Exception during reading all 'Statuses'.", e);
         }
         log.debug("Statuses not found.");
-        return null;
+        return new ArrayList<>();
     }
 
     @Override

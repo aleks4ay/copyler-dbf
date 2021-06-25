@@ -35,29 +35,24 @@ public class UtilDao {
         }
     }
 
-    public Connection getConnPostgresWithoutException() {
-        for (int i = 0; i<10; i++) {
-            try {
-                Class.forName(driverPostgres);
-                Connection connPostgres = DriverManager.getConnection(urlPostgres, user, password);
-                connPostgres.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-                connPostgres.setAutoCommit(false);
-                return connPostgres;
-            } catch (SQLException | ClassNotFoundException e) {
-                log.warn("Exception during {} trying connection for 'postgres' url= {}, user= {}.", i, urlPostgres, user, e);
-            }
-            try {
-                Thread.sleep(5 * 1000);
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            }
+    public Connection getConnPostgres() {
+        try {
+            Class.forName(driverPostgres);
+            Connection connPostgres = DriverManager.getConnection(urlPostgres, user, password);
+            connPostgres.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            connPostgres.setAutoCommit(false);
+            return connPostgres;
+        } catch (SQLException | ClassNotFoundException e) {
+            log.warn("Exception during create connection for 'postgres' url= {}, user= {}.", urlPostgres, user, e);
         }
         return null;
     }
 
     public void closeConnection(Connection conn) {
         try {
-            conn.close();
+            if (conn != null) {
+                conn.close();
+            }
         } catch (SQLException e) {
             log.warn("Exception during Closing connection {}.", conn, e);
         }

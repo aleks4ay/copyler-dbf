@@ -24,12 +24,12 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 public class EmbodimentReader  {
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    public static void main(String[] args) {
+/*    public static void main(String[] args) {
         String fileName = "c:/1C/Copy250106/SC14716.DBF";
         for (String s : new EmbodimentReader().getAllEmbodiment(File1CReader.file2byteArray(fileName)).values()) {
             System.out.println(s);
         }
-    }
+    }*/
 
     public Map<String, String> getAllEmbodiment(byte[] dataByteArray) {
         Map<String, String> mapEmbodiment = new HashMap<>();
@@ -54,6 +54,6 @@ public class EmbodimentReader  {
             DBFUtils.close(embodimentReader);
         }
         log.debug("Embodiment not found.");
-        return null;
+        return new HashMap<>();
     }
 }

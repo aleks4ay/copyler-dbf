@@ -65,7 +65,7 @@ public class DescriptionDaoJdbc implements DescriptionDao {
             log.warn("Exception during reading all 'Description'.", e);
         }
         log.debug("Description not found.");
-        return null;
+        return new ArrayList<>();
     }
 
     private boolean saveOrUpdateAll(List<Description> descriptionList, String sql) {

@@ -12,12 +12,12 @@ import java.util.List;
 public class TmcReader {
     private static final Logger log = LoggerFactory.getLogger(TmcReader.class);
 
-    public static void main(String[] args) {
+/*    public static void main(String[] args) {
         String fileName = "c:/1C/Copy250106/SC302.DBF";
         new TmcReader()
                 .getAll(File1CReader.file2byteArray(fileName))
                 .forEach(System.out::println);
-    }
+    }*/
 
     public List<Tmc> getAll(byte[] dataByteArray) {
         List<Tmc> listTmc = new ArrayList<>();
@@ -48,6 +48,6 @@ public class TmcReader {
             DBFUtils.close(reader);
         }
         log.debug("Tmc not found.");
-        return null;
+        return new ArrayList<>();
     }
 }

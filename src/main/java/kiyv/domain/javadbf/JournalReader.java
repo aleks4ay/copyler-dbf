@@ -20,10 +20,10 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 public class JournalReader {
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    public static void main(String[] args) {
+/*    public static void main(String[] args) {
         String fileName = "c:/1C/Copy250106/1SJOURN.DBF";
         Map<String, Journal> allJournal = new JournalReader().getAllJournal(File1CReader.file2byteArray(fileName));
-    }
+    }*/
 
     public Map<String, Journal> getAllJournal(byte[] dataByteArray) {
         Map<String, Journal> mapJournal = new HashMap<>();
@@ -57,6 +57,6 @@ public class JournalReader {
             DBFUtils.close(reader);
         }
         log.debug("Journal not found.");
-        return null;
+        return new HashMap<>();
     }
 }

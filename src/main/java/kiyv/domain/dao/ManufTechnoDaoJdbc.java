@@ -69,7 +69,7 @@ public class ManufTechnoDaoJdbc implements ManufDao {
             log.warn("Exception during reading all 'Manufactures' for Techno.", e);
         }
         log.debug("Manufactures for Techno not found.");
-        return null;
+        return new ArrayList<>();
     }
 
     private boolean saveOrUpdateAll(List<Manufacture> manufactureList, String sql) {

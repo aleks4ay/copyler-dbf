@@ -80,7 +80,7 @@ public class OrderDaoJdbc implements OrderDao {
             log.warn("Exception during reading all 'Order'.", e);
         }
         log.debug("Orders not found.");
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
@@ -97,7 +97,7 @@ public class OrderDaoJdbc implements OrderDao {
             log.warn("Exception during reading all 'Order IdDoc'.", e);
         }
         log.debug("Order's IdDoc not found.");
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
@@ -115,7 +115,7 @@ public class OrderDaoJdbc implements OrderDao {
             log.warn("Exception during reading all 'Order dateToFactory'.", e);
         }
         log.debug("Order's dateToFactory not found.");
-        return null;
+        return new HashMap<>();
     }
 
     private boolean saveOrUpdateAll(List<Order> orderList, String sql) {

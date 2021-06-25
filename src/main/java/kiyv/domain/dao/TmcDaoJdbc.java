@@ -60,7 +60,7 @@ public class TmcDaoJdbc implements TmcDao {
             log.warn("Exception during reading all 'Tmc'.", e);
         }
         log.debug("Tmc not found.");
-        return null;
+        return new ArrayList<>();
     }
 
     public boolean saveOrUpdateAll(List<Tmc> tmcList, String sql) {

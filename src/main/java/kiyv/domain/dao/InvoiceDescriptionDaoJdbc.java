@@ -42,7 +42,7 @@ public class InvoiceDescriptionDaoJdbc {
             log.warn("Exception during reading all 'InvoiceDescription'.", e);
         }
         log.debug("Description not found.");
-        return null;
+        return new ArrayList<>();
     }
 
     private boolean saveOrUpdateAll(List<InvoiceDescription> descriptionList, String sql) {

@@ -64,7 +64,7 @@ public class InvoiceDaoJdbc implements InvoiceDao {
             log.warn("Exception during reading all 'Invoices'.", e);
         }
         log.debug("Invoices not found.");
-        return null;
+        return new ArrayList<>();
     }
 
     private boolean saveOrUpdateAll(List<Invoice> invoiceList, String sql) {

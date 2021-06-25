@@ -18,12 +18,12 @@ import java.util.List;
 public class ClientReader {
     private static final Logger log = LoggerFactory.getLogger(ClientReader.class);
 
-    public static void main(String[] args) {
+/*    public static void main(String[] args) {
         String fileName = "c:/1C/Copy250106/SC172.DBF";
         new ClientReader()
                 .getAll(File1CReader.file2byteArray(fileName))
                 .forEach(System.out::println);
-    }
+    }*/
 
     public List<Client> getAll(byte[] dataByteArray) {
         List<Client> listClient = new ArrayList<>();
@@ -52,6 +52,6 @@ public class ClientReader {
             DBFUtils.close(reader);
         }
         log.debug("Clients not found.");
-        return null;
+        return new ArrayList<>();
     }
 }

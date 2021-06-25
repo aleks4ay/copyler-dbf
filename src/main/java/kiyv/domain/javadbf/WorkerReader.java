@@ -45,6 +45,6 @@ public class WorkerReader {
             DBFUtils.close(reader);
         }
         log.debug("Worker not found.");
-        return null;
+        return new HashMap<>();
     }
 }

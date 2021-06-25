@@ -64,7 +64,7 @@ public class CopyNewData1C {
             if (maxTime > maxTimeOld) {
                 log.info("* * * * Start copy files from 1C * * * *");
                 maxTimeOld = maxTime;
-                byte[] bytesJournal = File1CReader.file2byteArray(fNameJournal);
+                byte[] bytesJournal = new File1CReader().file2byteArray(fNameJournal);
                 Map<String, Journal> journalMap = new JournalReader().getAllJournal(bytesJournal);
                 new CopyTmc().run(fNameTmc);
                 new CopyTmcTechno().run();

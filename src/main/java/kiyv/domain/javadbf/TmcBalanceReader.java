@@ -18,12 +18,12 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 public class TmcBalanceReader {
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    public static void main(String[] args) {
+/*    public static void main(String[] args) {
         String fileName = "c:/1C/Copy250106/RG1253.DBF";
         for (Integer i : new TmcBalanceReader().getAll(File1CReader.file2byteArray(fileName)).values()) {
             System.out.println(i);
         }
-    }
+    }*/
 
     public Map<String, Integer> getAll(byte[] dataByteArray) {
         Map<String, Integer> tmcBalanceMap = new HashMap<>();
@@ -52,6 +52,6 @@ public class TmcBalanceReader {
             DBFUtils.close(reader);
         }
         log.debug("TMC Balance not found.");
-        return null;
+        return new HashMap<>();
     }
 }

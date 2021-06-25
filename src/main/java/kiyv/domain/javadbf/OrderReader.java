@@ -19,12 +19,12 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 public class OrderReader  {
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    public static void main(String[] args) {
+/*    public static void main(String[] args) {
         String fileName = "c:/1C/Copy250106/DH1898.DBF";
         for (Order i : new OrderReader().getAll(File1CReader.file2byteArray(fileName)).values()) {
             System.out.println(i);
         }
-    }
+    }*/
 
     public Map<String, Order> getAll(byte[] dataByteArray) {
         Map<String, Order> mapOrder = new HashMap<>();
@@ -71,6 +71,6 @@ public class OrderReader  {
             DBFUtils.close(reader);
         }
         log.debug("Orders not found.");
-        return null;
+        return new HashMap<>();
     }
 }

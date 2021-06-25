@@ -21,7 +21,7 @@ public class CopyTmcTechno {
     public void run() {
         log.info("   writing 'T M C-techno'.");
         UtilDao utilDao = new UtilDao();
-        Connection connPostgres = utilDao.getConnPostgresWithoutException();
+        Connection connPostgres = utilDao.getConnPostgres();
         TmcDao tmcDao = new TmcDaoJdbc(connPostgres);
         TmcDao tmcDaoTechno = new TmcDaoTechnoJdbc(connPostgres);
         List<Tmc> listNewTmc = new ArrayList<>();
